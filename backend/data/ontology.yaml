@@ -1,0 +1,98 @@
+version: "1.0.0"
+name: manufacturing_process_quality_kg
+domain: 制造工艺质量（异常归因）
+design_method: 自顶向下（不良异常归因业务问题驱动）+ 自底向上（语料词频统计校准）
+description: >
+  围绕「不良现象为什么发生、在哪个工序、用什么对策处理」的归因链路设计，
+  覆盖 设备-工序-物料-不良现象-原因-对策 六类实体与九类关系。
+
+entities:
+  - label: Device
+    name_cn: 设备
+    desc: 工序使用的生产/检测设备（含产线维度的设备实例）
+    unique_key: id
+    properties:
+      - {name: name, type: string, required: true, desc: 规范名称}
+      - {name: aliases, type: "list[string]", desc: 别名/口语名/旧称}
+      - {name: model, type: string, desc: 设备型号}
+      - {name: line, type: string, desc: 所属产线}
+
+  - label: Process
+    name_cn: 工序
+    desc: 工艺流程节点（印刷、贴片、回流焊接等）
+    unique_key: id
+    properties:
+      - {name: name, type: string, required: true}
+      - {name: aliases, type: "list[string]"}
+      - {name: seq, type: int, desc: 工艺顺序}
+      - {name: std_params, type: "list[string]", desc: 标准工艺参数清单}
+
+  - label: Material
+    name_cn: 物料
+    desc: 工序耗用的原材料、元器件与在制品型号
+    unique_key: id
+    properties:
+      - {name: name, type: string, required: true}
+      - {name: aliases, type: "list[string]"}
+      - {name: spec, type: string, desc: 规格/牌号}
+      - {name: unit, type: string, desc: 计量单位}
+
+  - label: Defect
+    name_cn: 不良现象
+    desc: 质量异常的可观测现象
+    unique_key: id
+    properties:
+      - {name: name, type: string, required: true}
+      - {name: aliases, type: "list[string]"}
+      - {name: severity, type: string, desc: 严重度等级（高/中/低）}
+
+  - label: Cause
+    name_cn: 原因
+    desc: 不良的归因因子（5M1E：人机料法环测，参数化到工序/产品）
+    unique_key: id
+    properties:
+      - {name: name, type: string, required: true}
+      - {name: aliases, type: "list[string]"}
+      - {name: factor_type, type: string, desc: 机/料/法/环/人/测}
+
+  - label: Countermeasure
+    name_cn: 对策
+    desc: 针对原因的处置/改善动作
+    unique_key: id
+    properties:
+      - {name: name, type: string, required: true}
+      - {name: aliases, type: "list[string]"}
+      - {name: action_type, type: string, desc: 调参/更换/清洁/加检/培训}
+
+relations:
+  - {type: USED_IN,                name_cn: 用于工序,   domain: Device,          range: Process,         desc: 设备用于某工序}
+  - {type: USES_MATERIAL,         name_cn: 耗用物料,   domain: Process,         range: Material,        desc: 工序耗用某物料}
+  - {type: OCCURS_AT,             name_cn: 发生于工序, domain: Defect,          range: Process,         desc: 不良现象发生于某工序}
+  - {type: CAUSED_BY,             name_cn: 归因于,     domain: Defect,          range: Cause,           desc: 不良现象归因于某原因}
+  - {type: ADDRESSED_BY,          name_cn: 对策为,     domain: Cause,           range: Countermeasure,  desc: 原因由某对策处置}
+  - {type: TARGETS,               name_cn: 作用于,     domain: Countermeasure,  range: Device,          desc: 对策作用的设备对象，多态目标（也可指向工序/物料，按运行时标签判断）}
+  - {type: INDUCED_BY_MATERIAL,   name_cn: 物料诱发,   domain: Defect,          range: Material,        desc: 某物料问题可诱发该不良}
+  - {type: SUBCLASS_OF,           name_cn: 细分为,     domain: Defect,          range: Defect,          desc: 不良现象细分层次（如 BGA 空洞 细分自 空洞）}
+  - {type: PRECEDES,              name_cn: 前序工序,   domain: Process,         range: Process,         desc: 工序先后关系}
+
+constraints:
+  - 实体全局唯一 id，name 在同 label 内唯一
+  - 关系闭域：抽取结果只允许落在上述 9 类关系内
+  - CAUSED_BY / ADDRESSED_BY 为归因主链路，评测多跳问题的核心边
+  - 别名归一后入图，禁止同一物理实体多节点（重复实体率纳入质量监控）
+
+query_templates:
+  - name: 多跳归因
+    cypher: >
+      MATCH (d:Defect)-[:CAUSED_BY]->(c:Cause)-[:ADDRESSED_BY]->(m:Countermeasure)
+      WHERE d.name = $defect
+      RETURN d, collect(c) AS causes, collect(m) AS countermeasures
+  - name: 责任工序
+    cypher: >
+      MATCH (d:Defect)-[:OCCURS_AT]->(p:Process)
+      WHERE d.name = $defect
+      RETURN d, collect(p) AS processes
+  - name: 工序不良聚合
+    cypher: >
+      MATCH (d:Defect)-[:OCCURS_AT]->(p:Process {name:$process})
+      RETURN p, collect(d) AS defects

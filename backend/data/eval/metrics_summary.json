@@ -1,0 +1,236 @@
+{
+  "extraction_sample300": {
+    "entity": {
+      "precision": 0.9248,
+      "recall": 0.9109,
+      "f1": 0.9178,
+      "tp": 8105,
+      "fp": 659,
+      "fn": 793
+    },
+    "relation": {
+      "precision": 0.8384,
+      "recall": 0.7854,
+      "f1": 0.811,
+      "tp": 7454,
+      "fp": 1437,
+      "fn": 2037
+    },
+    "sample_size": 300
+  },
+  "retrieval_hit_at_3": {
+    "single": {
+      "bm25": 0.7,
+      "vector": 0.82,
+      "graph": 0.88
+    },
+    "multi": {
+      "bm25": 0.58,
+      "vector": 0.88,
+      "graph": 0.98
+    },
+    "agg": {
+      "bm25": 0.8286,
+      "vector": 0.7429,
+      "graph": 0.9143
+    }
+  },
+  "retrieval_mrr": {
+    "single": {
+      "bm25": 0.6467,
+      "vector": 0.7133,
+      "graph": 0.8367
+    },
+    "multi": {
+      "bm25": 0.49,
+      "vector": 0.7667,
+      "graph": 0.8667
+    },
+    "agg": {
+      "bm25": 0.7524,
+      "vector": 0.6524,
+      "graph": 0.8857
+    }
+  },
+  "retrieval_detail": {
+    "single": {
+      "bm25": {
+        "hit_at_3": 0.7,
+        "mrr": 0.6467,
+        "coverage_at_3": 0.5821,
+        "coverage_at_10": 0.6511,
+        "coverage_all": 0.6511,
+        "n": 50
+      },
+      "vector": {
+        "hit_at_3": 0.82,
+        "mrr": 0.7133,
+        "coverage_at_3": 0.6014,
+        "coverage_at_10": 0.7117,
+        "coverage_all": 0.8057,
+        "n": 50
+      },
+      "graph": {
+        "hit_at_3": 0.88,
+        "mrr": 0.8367,
+        "coverage_at_3": 0.7562,
+        "coverage_at_10": 0.8568,
+        "coverage_all": 0.9746,
+        "n": 50
+      }
+    },
+    "multi": {
+      "bm25": {
+        "hit_at_3": 0.58,
+        "mrr": 0.49,
+        "coverage_at_3": 0.2407,
+        "coverage_at_10": 0.4697,
+        "coverage_all": 0.4963,
+        "n": 50
+      },
+      "vector": {
+        "hit_at_3": 0.88,
+        "mrr": 0.7667,
+        "coverage_at_3": 0.424,
+        "coverage_at_10": 0.618,
+        "coverage_all": 0.6247,
+        "n": 50
+      },
+      "graph": {
+        "hit_at_3": 0.98,
+        "mrr": 0.8667,
+        "coverage_at_3": 0.7643,
+        "coverage_at_10": 0.8103,
+        "coverage_all": 0.8103,
+        "n": 50
+      }
+    },
+    "agg": {
+      "bm25": {
+        "hit_at_3": 0.8286,
+        "mrr": 0.7524,
+        "coverage_at_3": 0.5386,
+        "coverage_at_10": 0.7297,
+        "coverage_all": 0.7354,
+        "n": 35
+      },
+      "vector": {
+        "hit_at_3": 0.7429,
+        "mrr": 0.6524,
+        "coverage_at_3": 0.4046,
+        "coverage_at_10": 0.7434,
+        "coverage_all": 0.7803,
+        "n": 35
+      },
+      "graph": {
+        "hit_at_3": 0.9143,
+        "mrr": 0.8857,
+        "coverage_at_3": 0.7162,
+        "coverage_at_10": 0.8155,
+        "coverage_all": 0.8155,
+        "n": 35
+      }
+    }
+  },
+  "end_to_end_accuracy": {
+    "single": {
+      "bm25": {
+        "accuracy": 0.32,
+        "n": 50
+      },
+      "vector": {
+        "accuracy": 0.3,
+        "n": 50
+      },
+      "graph": {
+        "accuracy": 0.96,
+        "n": 50
+      },
+      "hybrid": {
+        "accuracy": 0.64,
+        "n": 50
+      }
+    },
+    "multi": {
+      "bm25": {
+        "accuracy": 0.04,
+        "n": 50
+      },
+      "vector": {
+        "accuracy": 0.04,
+        "n": 50
+      },
+      "graph": {
+        "accuracy": 0.68,
+        "n": 50
+      },
+      "hybrid": {
+        "accuracy": 0.68,
+        "n": 50
+      }
+    },
+    "agg": {
+      "bm25": {
+        "accuracy": 0.1143,
+        "n": 35
+      },
+      "vector": {
+        "accuracy": 0.1429,
+        "n": 35
+      },
+      "graph": {
+        "accuracy": 0.6857,
+        "n": 35
+      },
+      "hybrid": {
+        "accuracy": 0.6,
+        "n": 35
+      }
+    },
+    "agg_number": {
+      "bm25": {
+        "accuracy": 0.4,
+        "exact": 0.0,
+        "n": 15
+      },
+      "vector": {
+        "accuracy": 0.0,
+        "exact": 0.0,
+        "n": 15
+      },
+      "graph": {
+        "accuracy": 1.0,
+        "exact": 1.0,
+        "n": 15
+      },
+      "hybrid": {
+        "accuracy": 1.0,
+        "exact": 1.0,
+        "n": 15
+      }
+    }
+  },
+  "ablation_graph_channel": {
+    "multi_hop": {
+      "graph_on_hybrid": {
+        "hit_at_3": 0.98,
+        "accuracy": 0.68
+      },
+      "graph_off_vector_only": {
+        "hit_at_3": 0.88,
+        "accuracy": 0.04
+      }
+    },
+    "aggregation": {
+      "graph_on_hybrid": {
+        "hit_at_3": 0.9143,
+        "accuracy": 0.6
+      },
+      "graph_off_vector_only": {
+        "hit_at_3": 0.7429,
+        "accuracy": 0.1429
+      }
+    }
+  },
+  "question_count": 150
+}

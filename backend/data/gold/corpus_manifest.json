@@ -1,0 +1,15 @@
+{
+  "seed": 42,
+  "doc_count": 200,
+  "genre_count": {
+    "SOP": 70,
+    "EX": 90,
+    "NTC": 40
+  },
+  "gold_entities_mentioned": 4906,
+  "gold_relations": 9491,
+  "scenario_count": 576,
+  "cause_covered": 1401,
+  "countermeasure_covered": 1401,
+  "kb_entity_pool": 6036
+}
